@@ -22,6 +22,33 @@ body{font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:va
 #qr{inset:0;border-radius:0;background:#000a;display:none;align-items:center;justify-content:center}
 #qr div{background:#fff;color:#111;padding:20px;border-radius:16px;text-align:center;max-width:300px}
 #qr button{margin:10px 4px 0;padding:8px 14px;border-radius:8px;border:1px solid #888;background:#f3f4f6;font-size:15px}
+#nav{left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:min(92vw,420px);max-height:55vh;overflow:auto;padding:10px 12px;display:none;font-size:14px}
+#navH{display:flex;justify-content:space-between;align-items:center}
+#nav select{font-size:14px;padding:5px;border-radius:9px;max-width:60%;background:var(--card);color:var(--ink);border:1px solid var(--mut)}
+#nav button{border:1px solid var(--mut);background:none;color:var(--ink);border-radius:9px;padding:5px 10px;margin:3px 4px 3px 0;font-size:13.5px}
+#nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+#navOut ol{margin:8px 0 0;padding-left:20px}#navOut li{margin:5px 0;line-height:1.3}
+#nStops button{background:var(--acc)!important;color:#fff!important;border-color:var(--acc)!important;border-radius:14px!important}
+.stopm span{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#f59e0b;color:#fff;font-weight:700;font-size:14px;border:3px solid #fff;box-shadow:0 2px 6px #0007}
+#navSum{margin-top:6px;font-weight:600}
+#nav.mini:not(.det){display:none!important}
+#nav.mini.det{bottom:calc(92px + env(safe-area-inset-bottom,0px));left:10px;transform:none;width:min(calc(100% - 80px),420px);max-height:45vh}
+#nav.mini #navH,#nav.mini #navSel,#nav.mini #navSum,#nav.mini #navBtns{display:none}
+#priv{top:calc(10px + env(safe-area-inset-top,0px));left:10px;right:10px;max-width:460px;display:none;background:#b91c1c;color:#fff;padding:12px 14px;align-items:center;gap:14px;font-size:16px;z-index:1100;border:3px solid #fff}
+#priv .ic{font-size:38px}#priv b{font-size:22px}
+#priv.show{display:flex}
+#navTop{top:calc(10px + env(safe-area-inset-top,0px));left:10px;right:10px;max-width:460px;display:none;background:#1f5f3a;color:#fff;padding:10px 14px;align-items:center;gap:14px}
+#navTop .ic{font-size:44px;line-height:1;width:54px;text-align:center}
+#navTop .ds{font-size:30px;font-weight:700;line-height:1.05}
+#navTop .tx{font-size:16px;margin-top:3px;opacity:.95}
+#navBot{left:10px;bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(calc(100% - 80px),420px);display:none;padding:9px 12px;align-items:center;justify-content:space-between;gap:8px}
+#navBot .big{font-size:22px;font-weight:700;color:#15803d}#navBot small{display:block;color:var(--mut);font-size:13px}
+#navBot button{border:1px solid var(--mut);background:none;color:var(--ink);border-radius:9px;padding:7px 7px;font-size:12.5px;margin-left:3px}#navBot>div:last-child{display:flex;flex-wrap:nowrap}
+#navBot button.end{background:#dc2626;border-color:#dc2626;color:#fff;font-weight:600}
+body.navon #navTop,body.navon #navBot{display:flex}
+body.navon #title,body.navon #leg,body.navon #dist{display:none}
+body.navon #status{top:calc(100px + env(safe-area-inset-top,0px))}
+.walker span{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:#fff;border:3px solid #2563eb;font-size:20px;box-shadow:0 2px 8px #0006}
 .leaflet-control-layers{font-size:14px;border-radius:12px!important;border:0!important;box-shadow:0 2px 14px #0004!important}
 #leg{left:10px;bottom:calc(84px + env(safe-area-inset-bottom,0px));padding:8px 12px;font-size:12.5px;line-height:1.9}
 #leg i{display:inline-block;width:26px;height:0;border-top:3px solid;vertical-align:middle;margin-right:8px;border-radius:2px}
@@ -34,9 +61,19 @@ body{font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:va
 <div id="map"></div>
 <div class="card" id="title"><b>⛰ Quartier du Cerf</b><small>Carte des sentiers et des rues</small></div>
 <div class="card" id="status">Chargement de la carte…</div>
-<div class="card" id="leg"><div><i style="border-color:#7fcf8a"></i>Sentiers</div><div><i style="border-color:#fff4d6"></i>Rues</div><div><i style="border-color:#e9a3c9"></i>Accès aux lacs</div><div><i style="border-color:#60a5fa"></i>Lacs et cours d’eau</div></div>
+<div class="card" id="leg"><div><i style="border-color:#f59e0b;border-top-width:8px"></i>Lot à vendre</div><div><i style="border-color:#d9c27a;border-top-width:8px"></i>Future phase</div><div><i style="border-color:#3f6b2c;border-top-width:8px"></i>Lot vendu</div><div><i style="border-color:#ffe14d;border-top-style:dotted"></i>Sentiers</div><div><i style="border-color:#fff4d6;border-top-width:8px;opacity:.6"></i>Rues</div><div><i style="border-color:#ff4fa3;border-top-style:dotted"></i>Accès aux lacs</div><div><i style="border-color:#60a5fa"></i>Lacs et cours d’eau</div></div>
 <div class="card" id="dist"><span id="dtxt">0 m parcourus</span><button id="bReset">Effacer</button></div>
-<div class="card" id="btns"><button id="bLoc" title="Ma position">◎</button><button id="bFit" title="Vue d’ensemble">⌂</button><button id="bQr" title="Code QR">▦</button></div>
+<div class="card" id="btns"><button id="bLoc" title="Ma position">◎</button><button id="bFit" title="Vue d’ensemble">⌂</button><button id="bNav" title="Itinéraire vers un lac">➤</button><button id="bQr" title="Code QR">▦</button></div>
+<div class="card" id="nav"><div id="navH"><b>🚶 Itinéraire à pied</b><button id="navX">✕</button></div>
+<div id="navSel"><div style="margin-top:4px"><small>Départ :</small> <button id="nGps" class="on">Ma position</button><button id="nPick">Choisir sur la carte</button></div>
+<div style="margin-top:4px"><small>ou partir d’un lac / d’une rue :</small> <select id="nFrom"><option value="">Choisir…</option></select></div>
+<div><small>Destination :</small> <button data-l="Lac Bourgeois">Lac Bourgeois</button><button data-l="Lac du Cerf">Lac du Cerf</button><button data-l="Lac">Lac (3e)</button></div>
+<div style="margin-top:4px"><small>ou une rue :</small> <select id="nSt"><option value="">Choisir une rue…</option></select></div>
+<div style="margin-top:4px"><small>Arrêts en chemin :</small> <select id="nStop"><option value="">➕ Ajouter un arrêt…</option></select> <button id="nStopPick">📍 Sur la carte</button><div id="nStops"></div></div></div>
+<div id="navOut"></div></div>
+<div class="card" id="priv"><div class="ic">⛔</div><div><b>Terrain privé</b><br>Tu es sur un lot vendu. Fais demi-tour et reviens sur la rue ou le sentier.</div></div>
+<div class="card" id="navTop"><div class="ic" id="ntIc">⬆</div><div><div class="ds" id="ntDs"></div><div class="tx" id="ntTx"></div></div></div>
+<div class="card" id="navBot"><div><div class="big" id="nbT"></div><small id="nbS"></small></div><div><button id="nbDet">Détails</button><button id="nbMod">Modifier</button><button id="nbEnd" class="end">Terminer</button></div></div>
 <div class="card" id="qr"><div><b>Scanner pour ouvrir la carte</b><br><br><span id="qrBox"></span><br><small id="qrUrl"></small><br><button id="qrDl">Télécharger</button><button id="qrX">Fermer</button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -53,8 +90,87 @@ const base={
  "Plan":L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,maxNativeZoom:19,attribution:ATT})};
 base["Satellite"].addTo(map);
 L.control.scale({imperial:false,position:"bottomleft"}).addTo(map);
-const LAY=[["limites","Limites des lots","#e2e8f0",1],["gazon","Espaces verts","#84cc16",1],["eau","Lacs et cours d’eau","#60a5fa",2.5],["rues","Rues","#fff4d6",2],["acces","Accès aux lacs","#e9a3c9",2.6],["sentiers","Sentiers","#7fcf8a",2.8],["numeros","Numéros de lot","#ffffff",1]];
+const LAY=[["limites","Limites des lots","#e2e8f0",1],["gazon","Espaces verts","#84cc16",1],["eau","Lacs et cours d’eau","#60a5fa",2.5],["rues","Rues (contour)","#fff4d6",2],["acces","Accès aux lacs","#ff4fa3",5],["sentiers","Sentiers","#ffe14d",5],["numeros","Numéros de lot","#ffffff",1]];
 const G={},over={};
+// ---- Itinéraire (réseau rues + sentiers) ----
+let pinL=null,PRIV=[],privN=0,navStops=[],navFrom="",GR=null,ADJ=null,navDest=null,navMode="gps",navStart=null,navPick=false,fix=null,navT=0,navLay=null,navWant=false;
+const KX=77000,KY=110540,dm=(a,b)=>Math.hypot((a[0]-b[0])*KX,(a[1]-b[1])*KY);
+const brg=(a,b)=>Math.atan2((b[0]-a[0])*KX,(b[1]-a[1])*KY)*180/Math.PI;
+function buildNav(){ADJ=GR.v.map(()=>[]);GR.e.forEach((e,k)=>{const L=dm(GR.v[e[0]],GR.v[e[1]]);ADJ[e[0]].push([e[1],L,k]);ADJ[e[1]].push([e[0],L,k])})}
+function nearV(p){let b=-1,bd=1e9;GR.v.forEach((v,i)=>{const d=dm(v,p);if(d<bd){bd=d;b=i}});return[b,bd]}
+function dijk(s){const n=GR.v.length,D=new Float64Array(n).fill(1e12),PV=new Int32Array(n).fill(-1),PE=new Int32Array(n).fill(-1),done=new Uint8Array(n);(Array.isArray(s)?s:[s]).forEach(i=>D[i]=0);
+ for(let it=0;it<n;it++){let u=-1,b=1e12;for(let i=0;i<n;i++)if(!done[i]&&D[i]<b){b=D[i];u=i}if(u<0)break;done[u]=1;
+  for(const[v,L,k]of ADJ[u])if(D[u]+L<D[v]){D[v]=D[u]+L;PV[v]=u;PE[v]=k}}
+ return{D,PV,PE}}
+function stepsOf(nodes,eds,lake){const g=[];
+ eds.forEach((k,i)=>{const e=GR.e[k],t=e[2],nm=e[3],key=t===0?(nm<0&&g.length&&g[g.length-1].t===0?g[g.length-1].key:"r"+nm):t===1?"s":t===2?"a":(g.length?g[g.length-1].key:"r-1"),L=dm(GR.v[nodes[i]],GR.v[nodes[i+1]]);
+  if(g.length&&g[g.length-1].key===key)g[g.length-1].len+=L,g[g.length-1].end=i+1;else g.push({key,t:t===3?0:t,nm,len:L,start:i,end:i+1})});
+ for(let i=0;i<g.length-1;i++)if(g[i].t===0&&g[i].nm<0&&g[i+1].t===0&&g[i+1].nm>=0){g[i+1].len+=g[i].len;g[i+1].start=g[i].start;g.splice(i,1);i--}
+ const out=[];g.forEach((s,i)=>{const nm=s.t===0&&s.nm>=0?GR.n[s.nm]:null;
+  const what=s.t===1?"le sentier":s.t===2?"l’accès au lac":nm?nm:"la rue";
+  let turn="";if(i>0){const a=GR.v[nodes[Math.max(0,s.start-2)]],b=GR.v[nodes[s.start]],c=GR.v[nodes[Math.min(nodes.length-1,s.start+2)]];
+   let d=brg(b,c)-brg(a,b);d=((d+540)%360)-180;turn=Math.abs(d)<25?"Continuer sur ":Math.abs(d)>150?"Faire demi-tour sur ":d>0?"Tourner à droite sur ":"Tourner à gauche sur "}
+  else turn="Suivre ";
+  out.push([turn+(s.t===0&&nm?"":"")+(nm&&s.t===0?what:what),s.len])});
+ return out}
+const DL=d=>d==="Lac"?"3e lac":d.startsWith("r:")?d.slice(2):d;
+function navClear(){if(navLay){map.removeLayer(navLay);navLay=null}}
+function navGo(quiet){if(!GR)return;const o=$("navOut");
+ const named=navMode==="named",from=named?null:navMode==="gps"?fix:navStart;
+ if(!navDest){o.innerHTML="<small>Choisis un lac ou une rue.</small>";return}
+ if(named&&!navFrom){o.innerHTML="<small>Choisis le lac ou la rue de départ.</small>";return}
+ if(named&&navFrom===navDest&&!navStops.length){navClear();o.innerHTML="<small>Le départ et la destination sont identiques.</small>";return}
+ if(!named&&!from){if(navMode==="gps"){o.innerHTML="<small>Recherche de ta position GPS…</small>";navWant=true;if(watch===null)$("bLoc").click()}else{o.innerHTML="<small>Touche la carte pour choisir le départ.</small>"}return}
+ let s,sd;if(named){s=GR.t[navFrom];sd=0}else[s,sd]=nearV(from);if(sd>200){navClear();o.innerHTML="<b>Tu es trop loin du réseau</b> de rues et de sentiers ("+Math.round(sd)+" m). Rapproche-toi d’une rue ou d’un sentier.";return}
+ let cur=Array.isArray(s)?s:[s],td=0,nodes=[],st=[],stopPts=[],snapL=[];const seq=[...navStops,navDest];
+ for(let q=0;q<seq.length;q++){const k=seq[q],r=dijk(cur),T=k.startsWith("p:")?[nearV(k.slice(2).split(",").map(Number))[0]]:GR.t[k];let tv=null,dd=1e12;for(const t of T)if(r.D[t]<dd){dd=r.D[t];tv=t}
+  if(tv===null||dd>1e11){navClear();o.innerHTML="Aucun chemin trouvé.";return}
+  const nn=[tv],ee=[];for(let c=tv;r.PV[c]>=0;c=r.PV[c]){ee.push(r.PE[c]);nn.push(r.PV[c])}nn.reverse();ee.reverse();
+  td+=dd;nodes.push(...nn);st.push(...stepsOf(nn,ee));
+  if(q<seq.length-1){st.push(["Arrêt "+(q+1)+" : "+(k.startsWith("p:")?"point sur la carte":DL(k)),0]);{const ex=k.startsWith("p:")?k.slice(2).split(",").map(Number).reverse():null,vv=[GR.v[tv][1],GR.v[tv][0]];stopPts.push(ex||vv);if(ex&&dm([ex[1],ex[0]],[vv[1],vv[0]])>2)snapL.push(L.polyline([ex,vv],{color:"#f59e0b",weight:3,dashArray:"4 6",interactive:false}))}}cur=[tv]}
+ const fr=named?[GR.v[nodes[0]][0],GR.v[nodes[0]][1]]:from;
+ const ll=[[fr[1],fr[0]],...nodes.map(i=>[GR.v[i][1],GR.v[i][0]])];
+ navClear();const lm=(!named&&sd>3)?ll.slice(1):ll;if(lm!==ll)snapL.push(L.polyline([ll[0],ll[1]],{color:"#2563eb",weight:4,dashArray:"4 7",interactive:false}));
+ navLay=L.layerGroup([L.polyline(lm,{color:"#fff",weight:9,opacity:.95,lineCap:"round",lineJoin:"round"}),L.polyline(lm,{color:"#2563eb",weight:5,opacity:1,lineCap:"round",lineJoin:"round"}),...snapL,
+  L.circleMarker(ll[ll.length-1],{radius:8,color:"#fff",weight:3,fillColor:"#ef4444",fillOpacity:1}),
+  ...stopPts.map((p,i)=>L.marker(p,{interactive:false,keyboard:false,icon:L.divIcon({className:"stopm",html:"<span>"+(i+1)+"</span>",iconSize:[26,26],iconAnchor:[13,13]})})),
+  L.marker(ll[0],{interactive:false,keyboard:false,zIndexOffset:900,icon:L.divIcon({className:"walker",html:"<span>🚶</span>",iconSize:[34,34],iconAnchor:[17,17]})})]).addTo(map);
+ const tot=td+sd,mins=Math.max(1,Math.round(tot/75));
+ let h='<div id="navSum">🚶 '+(tot>=1000?(tot/1000).toFixed(2)+" km":Math.round(tot)+" m")+" · environ "+mins+' min</div><div id="navBtns"></div><ol>';
+ if(sd>12)h+="<li>Rejoindre le réseau : environ "+Math.round(sd)+" m (ligne pointillée)</li>";
+ st.forEach(x=>h+=/^Arrêt/.test(x[0])?"<li><b>📍 "+x[0]+"</b></li>":"<li>"+x[0]+" <small>("+Math.round(x[1])+" m)</small></li>");
+ h+="<li><b>"+(navDest.startsWith("r:")?"Arrivée sur ":"Arrivée au ")+DL(navDest)+"</b></li></ol>";o.innerHTML=h;
+ const nv=$("nav");
+ const fmt=m=>m>=1000?(m/1000).toFixed(2)+" km":Math.round(m/5)*5+" m";
+ const nx=st[1],d0=sd+(st[0]?st[0][1]:0);
+ let ic="🏁",tx=(navDest.startsWith("r:")?"Arrivée sur ":"Arrivée au ")+DL(navDest);
+ if(nx){const t=nx[0];ic=/^Arrêt/.test(t)?"📍":/droite/.test(t)?"↱":/gauche/.test(t)?"↰":/demi-tour/.test(t)?"↶":"⬆";tx=t.replace(/^Continuer sur /,"Continuer sur ")}
+ $("ntIc").textContent=ic;$("ntDs").textContent=(nx?"Dans ":"Encore ")+fmt(nx?d0:tot);$("ntTx").textContent=tx;
+ const eta=new Date(Date.now()+mins*60000);
+ $("nbT").textContent=mins+" min";$("nbS").textContent=fmt(tot)+" · arrivée "+String(eta.getHours()).padStart(2,"0")+":"+String(eta.getMinutes()).padStart(2,"0");
+ if(!quiet){nv.classList.add("mini");nv.classList.remove("det");document.body.classList.add("navon");nv.style.display="block";map.fitBounds(L.polyline(ll).getBounds(),{paddingTopLeft:[40,130],paddingBottomRight:[70,150]})}
+ else if(document.body.classList.contains("navon")&&follow)map.setView(ll[0],Math.max(map.getZoom(),18))}
+$("navOut").addEventListener("click",e=>{const nv=$("nav");if(e.target.id==="nDet")nv.classList.toggle("det");if(e.target.id==="nMod"){nv.classList.remove("mini","det")}})
+$("nbDet").onclick=()=>$("nav").classList.toggle("det");
+$("nbMod").onclick=()=>{document.body.classList.remove("navon");$("nav").classList.remove("mini","det");$("nav").style.display="block"};
+$("nbEnd").onclick=()=>$("navX").click();
+function navOpen(){buildSt();$("nav").style.display="block"}
+$("bNav").onclick=()=>{$("nav").style.display==="block"?($("nav").style.display="none"):navOpen()};
+$("navX").onclick=()=>{document.body.classList.remove("navon");$("nav").classList.remove("mini","det");$("nav").style.display="none";navDest=null;navWant=false;navClear();navPick=false;navStops=[];renderStops();document.querySelectorAll("#nav [data-l]").forEach(b=>b.classList.remove("on"))};
+document.querySelectorAll("#nav [data-l]").forEach(b=>b.onclick=()=>{$("nSt").value="";navDest=b.dataset.l;document.querySelectorAll("#nav [data-l]").forEach(x=>x.classList.toggle("on",x===b));navGo()});
+function buildSt(){if(!GR||GR.stDone)return;GR.stDone=1;const m={};GR.e.forEach(e=>{if(e[2]===0&&e[3]>=0){(m[e[3]]=m[e[3]]||new Set()).add(e[0]).add(e[1])}});
+ const seen={};Object.keys(m).forEach(k=>{const n=GR.n[k];GR.t["r:"+n]=(GR.t["r:"+n]||[]).concat([...m[k]]);seen[n]=1});
+ Object.keys(seen).sort((a,b)=>a.localeCompare(b,"fr")).forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;$("nSt").appendChild(o)});
+ [["Lac Bourgeois","Lac Bourgeois"],["Lac du Cerf","Lac du Cerf"],["Lac","3e lac"]].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent="🌊 "+t;$("nFrom").appendChild(o)});Object.keys(seen).sort((a,b)=>a.localeCompare(b,"fr")).forEach(n=>{const o=document.createElement("option");o.value="r:"+n;o.textContent=n;$("nFrom").appendChild(o)});[["Lac Bourgeois","Lac Bourgeois"],["Lac du Cerf","Lac du Cerf"],["Lac","3e lac"]].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent="🌊 "+t;$("nStop").appendChild(o)});Object.keys(seen).sort((a,b)=>a.localeCompare(b,"fr")).forEach(n=>{const o=document.createElement("option");o.value="r:"+n;o.textContent=n;$("nStop").appendChild(o)})}
+$("nFrom").onchange=()=>{const v=$("nFrom").value;if(!v)return;navFrom=v;navMode="named";$("nGps").classList.remove("on");$("nPick").classList.remove("on");navGo()};
+function renderStops(){$("nStops").innerHTML=navStops.map((k,i)=>'<button data-i="'+i+'">'+(i+1)+". "+(k.startsWith("p:")?"Point carte":DL(k))+" ✕</button>").join("")}
+$("nStops").onclick=e=>{const b=e.target.closest("button");if(!b)return;navStops.splice(+b.dataset.i,1);renderStops();navGo()};
+$("nStop").onchange=()=>{const v=$("nStop").value;if(!v)return;navStops.push(v);$("nStop").value="";renderStops();navGo()};
+$("nStopPick").onclick=()=>{navPick="stop";$("navOut").innerHTML="<small>Touche la carte pour placer l’arrêt.</small>"};
+$("nSt").onchange=()=>{const v=$("nSt").value;if(!v)return;navDest="r:"+v;document.querySelectorAll("#nav [data-l]").forEach(x=>x.classList.remove("on"));navGo()};
+$("nGps").onclick=()=>{$("nFrom").value="";navMode="gps";navPick=false;$("nGps").classList.add("on");$("nPick").classList.remove("on");navGo()};
+$("nPick").onclick=()=>{$("nFrom").value="";navMode="pick";navPick=true;$("nPick").classList.add("on");$("nGps").classList.remove("on");$("navOut").innerHTML="<small>Touche la carte pour choisir ton point de départ.</small>"};
+
 // ---- Noms posés le long des rues (texte suivant l'axe de la rue) ----
 const TextLayer=L.Layer.extend({
  initialize(items){this.items=items;this.lac=items.length&&items[0].lac},
@@ -91,26 +207,36 @@ const TextLayer=L.Layer.extend({
   REG[L.stamp(this)]=mine}
 });let segs=[],kx,ky,lat0,lon0;
 fetch("data.json").then(r=>r.json()).then(D=>{
+  GR=D.graph;buildNav();
   const pts=[];for(const k of["sentiers","acces","rues","eau"])D[k].forEach(l=>l.forEach(p=>pts.push(p)));
   lat0=pts.reduce((a,p)=>a+p[1],0)/pts.length;lon0=pts.reduce((a,p)=>a+p[0],0)/pts.length;
   kx=111320*Math.cos(lat0*Math.PI/180);ky=110540;
   const m=(lo,la)=>[(lo-lon0)*kx,(lat0-la)*ky];
+  const LC=[["#f59e0b",.78,"À vendre"],["#d9c27a",.5,"Future phase"],["#3f6b2c",.62,"Vendus"]];
+  const lg=L.layerGroup(D.lots.map(q=>L.polygon(q[1].map(p=>[p[1],p[0]]),{stroke:true,color:"#ffffff",weight:.7,opacity:.55,fillColor:LC[q[0]][0],fillOpacity:LC[q[0]][1],interactive:false}))).addTo(map);
+  PRIV=D.lots.filter(q=>q[0]===2).map(q=>{const r=q[1],xs=r.map(p=>p[0]),ys=r.map(p=>p[1]);return{r,x0:Math.min(...xs),x1:Math.max(...xs),y0:Math.min(...ys),y1:Math.max(...ys)}});
+  over["Lots : disponibilité"]=lg;
+  over["Rues (surface)"]=L.layerGroup(D.chaussee.map(q=>L.polygon([q[0],...q[1]].map(r=>r.map(p=>[p[1],p[0]])),{stroke:false,fillColor:"#fff4d6",fillOpacity:.38,interactive:false}))).addTo(map);
   for(const[k,nom,c,w]of LAY){
     const ll=D[k].map(l=>l.map(p=>[p[1],p[0]]));
-    const CS={rues:["#000",.55,5],acces:["#000",.35,5.5],sentiers:["#052e16",.4,5.5]},DA={},base0={lineCap:"round",lineJoin:"round"};
-    const line=k==="gazon"?L.polygon(ll,{color:c,weight:1,fillOpacity:.3,fillColor:c,stroke:false}):L.polyline(ll,{color:c,weight:w,opacity:k==="limites"?.55:(k==="sentiers"||k==="acces")?.9:1,dashArray:DA[k],...base0});
-    G[k]=CS[k]?L.featureGroup([L.polyline(ll,{color:CS[k][0],opacity:CS[k][1],weight:CS[k][2],...base0}),line]):line;
+    const CS={rues:["#000",.55,5],acces:["#ffffff",.95,8],sentiers:["#000",.7,8]},DA={sentiers:"0.1 10",acces:"0.1 10"},base0={lineCap:"round",lineJoin:"round"};
+    const line=k==="gazon"?L.polygon(ll,{color:c,weight:1,fillOpacity:.3,fillColor:c,stroke:false}):L.polyline(ll,{color:c,weight:w,opacity:k==="limites"?.55:1,dashArray:DA[k],...base0});
+    G[k]=CS[k]?L.featureGroup([L.polyline(ll,{color:CS[k][0],opacity:CS[k][1],weight:CS[k][2],dashArray:DA[k],...base0}),line]):line;
     over[nom]=G[k];
-    if(k!=="numeros")G[k].addTo(map);
+    if(k!=="numeros"&&k!=="rues")G[k].addTo(map);
     if(["sentiers","acces","rues"].includes(k))D[k].forEach(l=>{for(let i=1;i<l.length;i++)segs.push([m(...l[i-1]),m(...l[i]),k])});
   }
   over["Noms de rues"]=new TextLayer(D.labels.filter(b=>!b.lac)).addTo(map);
   over["Noms des lacs"]=new TextLayer(D.labels.filter(b=>b.lac)).addTo(map);
   L.control.layers(base,over,{collapsed:true,position:"topright"}).addTo(map);
   map.fitBounds(L.polyline(pts.map(p=>[p[1],p[0]])).getBounds(),{padding:[20,20]});
-  say("Touche ◎ pour te localiser sur la carte.");
+  dots();say("Touche ◎ pour te localiser sur la carte.");
 }).catch(e=>say("Données de la carte introuvables ("+e.message+").",true));
-const zl=()=>{const sat=map.hasLayer(base["Satellite"]);
+function dots(){const z=map.getZoom(),on=z>=16,w=z>=18?6:z>=17?5:4;
+ for(const k of["sentiers","acces"]){const g=G[k];if(!g||!g.getLayers)continue;const[c,l]=g.getLayers();
+  c.setStyle({opacity:on?(k==="acces"?.95:.7):0,weight:w+3,dashArray:"0.1 "+(w*2+3)});
+  l.setStyle({opacity:on?1:0,weight:w,dashArray:"0.1 "+(w*2+3)})}}
+const zl=()=>{dots();const sat=map.hasLayer(base["Satellite"]);
  for(const k of["numeros"])if(G[k])G[k].setStyle({color:sat?"#fff":"#1f2937",opacity:map.getZoom()>=17?.95:0});
  if(G.limites)G.limites.setStyle({color:sat?"#e2e8f0":"#64748b"})};
 map.on("zoomend baselayerchange overlayadd",zl);
@@ -122,7 +248,7 @@ const dst=(p,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy;let t=l?((p[0]
 function setFollow(v){follow=v;$("bLoc").classList.toggle("on",v);if(v&&me)map.setView(me.getLatLng(),Math.max(map.getZoom(),17))}
 async function keepAwake(){try{if(navigator.wakeLock&&!wl)wl=await navigator.wakeLock.request("screen"),wl.onrelease=()=>wl=null}catch(_){}}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&watch!==null)keepAwake()});
-function onPos(p){const c=p.coords,ll=[c.latitude,c.longitude];
+function onPos(p){const c=p.coords,ll=[c.latitude,c.longitude];fix=[c.longitude,c.latitude];if(navDest&&navMode==="gps"&&(navWant||Date.now()-navT>3000)){navT=Date.now();navGo(!navWant);navWant=false}
  if(!me){me=L.marker(ll,{icon,zIndexOffset:1000}).addTo(map);acc=L.circle(ll,{radius:c.accuracy,color:"#2563eb",weight:1,fillOpacity:.12}).addTo(map)}
  else{me.setLatLng(ll);acc.setLatLng(ll).setRadius(c.accuracy)}
  const el=me.getElement().firstChild,hd=c.heading!=null&&!isNaN(c.heading);el.classList.toggle("dir",hd);if(hd)el.style.setProperty("--h",c.heading+"deg");
@@ -134,12 +260,17 @@ function onPos(p){const c=p.coords,ll=[c.latitude,c.longitude];
  if(best<=Math.max(15,c.accuracy||0))say("✓ Tu es sur "+(bk==="sentiers"?"le sentier":bk==="acces"?"l’accès aux lacs":"la rue"));
  else if(best<=40)say("À "+Math.round(best)+" m "+nm+" le plus proche");
  else{say("⚠ Hors sentier : "+Math.round(best)+" m "+nm+" le plus proche. Reviens sur tes pas.",true);if(navigator.vibrate)navigator.vibrate([200,100,200])}
+ const inPriv=(c.accuracy||0)<=35&&PRIV.some(q=>{const X=c.longitude,Y=c.latitude;if(X<q.x0||X>q.x1||Y<q.y0||Y>q.y1)return false;let ins=false;for(let i=0,j=q.r.length-1;i<q.r.length;j=i++){const a=q.r[i],b=q.r[j];if((a[1]>Y)!==(b[1]>Y)&&X<(b[0]-a[0])*(Y-a[1])/(b[1]-a[1])+a[0])ins=!ins}return ins});
+ privN=inPriv&&best>Math.max(8,Math.min(c.accuracy||0,20))?privN+1:0;
+ const pv=privN>=2;if(pv&&!$("priv").classList.contains("show")&&navigator.vibrate)navigator.vibrate([400,150,400,150,400]);$("priv").classList.toggle("show",pv);
  if(follow)map.setView(ll,Math.max(map.getZoom(),17))}
 const onErr=e=>say(e.code===1?"Localisation refusée : autorise-la dans les réglages du navigateur.":"Position indisponible. Va à l’extérieur et réessaie.",true);
 $("bLoc").onclick=()=>{if(!navigator.geolocation)return say("Localisation non disponible sur cet appareil.",true);
  if(watch===null){say("Recherche du signal GPS…");watch=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,maximumAge:2000,timeout:20000});keepAwake()}
  setFollow(!follow||!me)};
 map.on("dragstart",()=>setFollow(false));
+map.on("click",e=>{if(navPick){if(pinL)map.removeLayer(pinL);pinL=L.circleMarker(e.latlng,{radius:7,color:"#fff",weight:3,fillColor:"#f59e0b",fillOpacity:1,interactive:false}).addTo(map);setTimeout(()=>{if(pinL){map.removeLayer(pinL);pinL=null}},4000)}
+ if(navPick==="stop"){navPick=false;navStops.push("p:"+e.latlng.lng+","+e.latlng.lat);renderStops();navGo()}else if(navPick){navPick=false;navStart=[e.latlng.lng,e.latlng.lat];navGo()}});
 $("bFit").onclick=()=>{setFollow(false);const b=L.latLngBounds([]);for(const k of["sentiers","acces","rues"])if(G[k])b.extend(G[k].getBounds());if(b.isValid())map.fitBounds(b,{padding:[20,20]})};
 $("bReset").onclick=()=>{track=[];walked=0;line.setLatLngs([]);$("dtxt").textContent="0 m parcourus"};
 // ---- Code QR ----
