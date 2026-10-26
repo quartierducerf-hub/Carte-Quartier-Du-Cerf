@@ -21,6 +21,7 @@ body{font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:va
 #dist button{margin-left:8px;border:1px solid var(--mut);background:none;color:var(--ink);border-radius:8px;padding:2px 8px}
 #qr{inset:0;border-radius:0;background:#000a;display:none;align-items:center;justify-content:center}
 #qr div{background:#fff;color:#111;padding:20px;border-radius:16px;text-align:center;max-width:300px}
+#qrBox{display:flex;justify-content:center;align-items:center;margin:0 auto}#qrBox canvas,#qrBox img{display:block;margin:0 auto}
 #qr button{margin:10px 4px 0;padding:8px 14px;border-radius:8px;border:1px solid #888;background:#f3f4f6;font-size:15px}
 #nav{left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:min(92vw,420px);max-height:55vh;overflow:auto;padding:10px 12px;display:none;font-size:14px}
 #navH{display:flex;justify-content:space-between;align-items:center}
@@ -74,7 +75,7 @@ body.navon #status{top:calc(100px + env(safe-area-inset-top,0px))}
 <div class="card" id="priv"><div class="ic">⛔</div><div><b>Terrain privé</b><br>Tu es sur un lot vendu. Fais demi-tour et reviens sur la rue ou le sentier.</div></div>
 <div class="card" id="navTop"><div class="ic" id="ntIc">⬆</div><div><div class="ds" id="ntDs"></div><div class="tx" id="ntTx"></div></div></div>
 <div class="card" id="navBot"><div><div class="big" id="nbT"></div><small id="nbS"></small></div><div><button id="nbDet">Détails</button><button id="nbMod">Modifier</button><button id="nbEnd" class="end">Terminer</button></div></div>
-<div class="card" id="qr"><div><b>Scanner pour ouvrir la carte</b><br><br><span id="qrBox"></span><br><small id="qrUrl"></small><br><button id="qrDl">Télécharger</button><button id="qrX">Fermer</button></div></div>
+<div class="card" id="qr"><div><b>Scanner pour ouvrir la carte</b><br><br><span id="qrBox"></span><br><button id="qrDl">Télécharger</button><button id="qrX">Fermer</button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
@@ -275,7 +276,7 @@ $("bFit").onclick=()=>{setFollow(false);const b=L.latLngBounds([]);for(const k o
 $("bReset").onclick=()=>{track=[];walked=0;line.setLatLngs([]);$("dtxt").textContent="0 m parcourus"};
 // ---- Code QR ----
 let qrDone=false;
-$("bQr").onclick=()=>{$("qr").style.display="flex";if(!qrDone){const u=location.href.split("#")[0].replace(/index\.html$/,"");new QRCode($("qrBox"),{text:u,width:240,height:240,correctLevel:QRCode.CorrectLevel.M});$("qrUrl").textContent=u;qrDone=true}};
+$("bQr").onclick=()=>{$("qr").style.display="flex";if(!qrDone){const u=location.href.split("#")[0].split("?")[0].replace(/index\.html$/,"");new QRCode($("qrBox"),{text:u,width:240,height:240,correctLevel:QRCode.CorrectLevel.M});qrDone=true}};
 $("qrX").onclick=()=>$("qr").style.display="none";
 $("qrDl").onclick=()=>{const c=$("qrBox").querySelector("canvas");if(!c)return;const a=document.createElement("a");a.href=c.toDataURL("image/png");a.download="qr-quartier-du-cerf.png";a.click()};
 if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
