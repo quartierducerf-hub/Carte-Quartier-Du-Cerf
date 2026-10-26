@@ -22,7 +22,11 @@ body{font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:va
 #qr{inset:0;border-radius:0;background:#000a;display:none;align-items:center;justify-content:center}
 #qr div{background:#fff;color:#111;padding:20px;border-radius:16px;text-align:center;max-width:300px}
 #qr button{margin:10px 4px 0;padding:8px 14px;border-radius:8px;border:1px solid #888;background:#f3f4f6;font-size:15px}
-.leaflet-control-layers{font-size:14px}
+.leaflet-control-layers{font-size:14px;border-radius:12px!important;border:0!important;box-shadow:0 2px 14px #0004!important}
+#leg{left:10px;bottom:calc(84px + env(safe-area-inset-bottom,0px));padding:8px 12px;font-size:12.5px;line-height:1.9}
+#leg i{display:inline-block;width:26px;height:0;border-top:3px solid;vertical-align:middle;margin-right:8px;border-radius:2px}
+#leg i.d{border-top-style:dashed}#leg i.t{border-top-style:dotted}
+#title{border-left:4px solid var(--acc)}
 .me{width:18px;height:18px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 0 6px #0008;position:relative}
 .me i{position:absolute;left:3px;top:-17px;border:6px solid transparent;border-bottom:12px solid #2563eb;transform-origin:6px 26px;transform:rotate(var(--h,0deg));display:none}
 .me.dir i{display:block}
@@ -30,6 +34,7 @@ body{font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:va
 <div id="map"></div>
 <div class="card" id="title"><b>⛰ Quartier du Cerf</b><small>Carte des sentiers et des rues</small></div>
 <div class="card" id="status">Chargement de la carte…</div>
+<div class="card" id="leg"><div><i style="border-color:#7fcf8a"></i>Sentiers</div><div><i style="border-color:#fff4d6"></i>Rues</div><div><i style="border-color:#e9a3c9"></i>Accès aux lacs</div><div><i style="border-color:#60a5fa"></i>Lacs et cours d’eau</div></div>
 <div class="card" id="dist"><span id="dtxt">0 m parcourus</span><button id="bReset">Effacer</button></div>
 <div class="card" id="btns"><button id="bLoc" title="Ma position">◎</button><button id="bFit" title="Vue d’ensemble">⌂</button><button id="bQr" title="Code QR">▦</button></div>
 <div class="card" id="qr"><div><b>Scanner pour ouvrir la carte</b><br><br><span id="qrBox"></span><br><small id="qrUrl"></small><br><button id="qrDl">Télécharger</button><button id="qrX">Fermer</button></div></div>
@@ -48,8 +53,43 @@ const base={
  "Plan":L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,maxNativeZoom:19,attribution:ATT})};
 base["Satellite"].addTo(map);
 L.control.scale({imperial:false,position:"bottomleft"}).addTo(map);
-const LAY=[["limites","Limites du projet","#e2e8f0",1],["gazon","Espaces verts","#84cc16",1],["eau","Cours d’eau","#3b82f6",3],["rues","Rues et lots","#22d3ee",3],["acces","Accès aux lacs","#e879f9",4],["sentiers","Sentiers","#4ade80",5],["noms","Noms de rues","#ffffff",1],["numeros","Numéros de lot","#ffffff",1]];
-const G={},over={};let segs=[],kx,ky,lat0,lon0;
+const LAY=[["limites","Limites des lots","#e2e8f0",1],["gazon","Espaces verts","#84cc16",1],["eau","Lacs et cours d’eau","#60a5fa",2.5],["rues","Rues","#fff4d6",2],["acces","Accès aux lacs","#e9a3c9",2.6],["sentiers","Sentiers","#7fcf8a",2.8],["numeros","Numéros de lot","#ffffff",1]];
+const G={},over={};
+// ---- Noms posés le long des rues (texte suivant l'axe de la rue) ----
+const TextLayer=L.Layer.extend({
+ initialize(items){this.items=items;this.lac=items.length&&items[0].lac},
+ onAdd(m){this._m=m;const c=this._c=L.DomUtil.create("canvas","lblc");c.style.cssText="position:absolute;left:0;top:0;pointer-events:none;z-index:450";
+  m.getPane("overlayPane").appendChild(c);this._f=()=>this.draw();m.on("moveend zoomend resize",this._f);m.on("zoomstart",()=>c.style.visibility="hidden");this.draw()},
+ onRemove(m){m.off("moveend zoomend resize",this._f);this._c.remove()},
+ draw(){const m=this._m,c=this._c,sz=m.getSize(),dpr=window.devicePixelRatio||1;
+  c.style.visibility="visible";L.DomUtil.setPosition(c,m.containerPointToLayerPoint([0,0]));
+  c.width=sz.x*dpr;c.height=sz.y*dpr;c.style.width=sz.x+"px";c.style.height=sz.y+"px";
+  const x=c.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,sz.x,sz.y);if(window.__reg)delete window.__reg[L.stamp(this)];
+  const z=m.getZoom();if(z<(this.lac?14:17))return;
+  const mpp=156543.03*Math.cos((lat0||46)*Math.PI/180)/Math.pow(2,z);
+  x.textBaseline="middle";x.lineJoin="round";
+  const REG=window.__reg=window.__reg||{};const taken=Object.keys(REG).filter(k=>k!==String(L.stamp(this))).flatMap(k=>REG[k]);const mine=[];
+  const all=this.items.map(b=>{let P=b.p.map(q=>{const p=m.latLngToContainerPoint([q[1],q[0]]);return[p.x,p.y]});
+   if(P[P.length-1][0]<P[0][0]||(Math.abs(P[P.length-1][0]-P[0][0])<2&&P[P.length-1][1]>P[0][1]))P.reverse();
+   if(this.lac){const mid=P[0].map((v,i)=>(v+P[P.length-1][i])/2);const h=(P[P.length-1][0]-P[0][0])/2*2.4;P=[[mid[0]-h,mid[1]],[mid[0]+h,mid[1]]]}
+   let L0=0;const cum=[0];for(let i=1;i<P.length;i++){L0+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);cum.push(L0)}
+   return{b,P,cum,L0}}).sort((a,b)=>b.L0-a.L0);
+  for(const o of all){const{b,P,cum,L0}=o;
+   let fs=this.lac?Math.min(26,12+(z-14)*2.5):Math.max(10,Math.min(15,b.wr/mpp*0.42));
+   const fnt=s=>(this.lac?"italic 600 ":"600 ")+s+"px Georgia,'Times New Roman',serif";
+   const ls=this.lac?1.2:0.4;x.font=fnt(fs);let adv=[...b.t].map(ch=>x.measureText(ch).width+ls),tl=adv.reduce((a,v)=>a+v,0)-ls;
+   if(!this.lac&&tl>L0*0.98){fs=fs*L0*0.98/tl;if(fs<9)continue;x.font=fnt(fs);adv=[...b.t].map(ch=>x.measureText(ch).width+ls);tl=adv.reduce((a,v)=>a+v,0)-ls}
+   if(!this.lac&&fs>b.wr/mpp*0.6)continue;
+   let pos=(L0-tl)/2;const g=[];
+   const at=d=>{let i=1;while(i<cum.length-1&&cum[i]<d)i++;const t=(d-cum[i-1])/((cum[i]-cum[i-1])||1),a=P[i-1],e=P[i];return[a[0]+(e[0]-a[0])*t,a[1]+(e[1]-a[1])*t,Math.atan2(e[1]-a[1],e[0]-a[0])]};
+   [...b.t].forEach((ch,k)=>{const w=adv[k]-ls,p=at(pos+w/2);g.push([ch,p[0],p[1],p[2],w]);pos+=adv[k]});
+   const box=g.map(q=>[q[1]-fs*.6,q[2]-fs*.6,q[1]+fs*.6,q[2]+fs*.6]);
+   if(box.some(r=>taken.some(q=>!(r[2]<q[0]||q[2]<r[0]||r[3]<q[1]||q[3]<r[1]))))continue;
+   mine.push(...box);
+   x.lineWidth=Math.max(2.5,fs*.28);x.strokeStyle="rgba(0,0,0,.85)";x.fillStyle=this.lac?"#dff1ff":"#fff";
+   for(const q of g){x.save();x.translate(q[1],q[2]);x.rotate(q[3]);x.strokeText(q[0],-q[4]/2,0);x.fillText(q[0],-q[4]/2,0);x.restore()}}
+  REG[L.stamp(this)]=mine}
+});let segs=[],kx,ky,lat0,lon0;
 fetch("data.json").then(r=>r.json()).then(D=>{
   const pts=[];for(const k of["sentiers","acces","rues","eau"])D[k].forEach(l=>l.forEach(p=>pts.push(p)));
   lat0=pts.reduce((a,p)=>a+p[1],0)/pts.length;lon0=pts.reduce((a,p)=>a+p[0],0)/pts.length;
@@ -57,17 +97,21 @@ fetch("data.json").then(r=>r.json()).then(D=>{
   const m=(lo,la)=>[(lo-lon0)*kx,(lat0-la)*ky];
   for(const[k,nom,c,w]of LAY){
     const ll=D[k].map(l=>l.map(p=>[p[1],p[0]]));
-    G[k]=k==="gazon"?L.polygon(ll,{color:c,weight:1,fillOpacity:.35,fillColor:c}):L.polyline(ll,{color:c,weight:w,opacity:k==="limites"?.6:1,lineCap:"round",lineJoin:"round"});
+    const CS={rues:["#000",.55,5],acces:["#000",.35,5.5],sentiers:["#052e16",.4,5.5]},DA={},base0={lineCap:"round",lineJoin:"round"};
+    const line=k==="gazon"?L.polygon(ll,{color:c,weight:1,fillOpacity:.3,fillColor:c,stroke:false}):L.polyline(ll,{color:c,weight:w,opacity:k==="limites"?.55:(k==="sentiers"||k==="acces")?.9:1,dashArray:DA[k],...base0});
+    G[k]=CS[k]?L.featureGroup([L.polyline(ll,{color:CS[k][0],opacity:CS[k][1],weight:CS[k][2],...base0}),line]):line;
     over[nom]=G[k];
-    if(k!=="numeros"&&k!=="noms")G[k].addTo(map);
+    if(k!=="numeros")G[k].addTo(map);
     if(["sentiers","acces","rues"].includes(k))D[k].forEach(l=>{for(let i=1;i<l.length;i++)segs.push([m(...l[i-1]),m(...l[i]),k])});
   }
+  over["Noms de rues"]=new TextLayer(D.labels.filter(b=>!b.lac)).addTo(map);
+  over["Noms des lacs"]=new TextLayer(D.labels.filter(b=>b.lac)).addTo(map);
   L.control.layers(base,over,{collapsed:true,position:"topright"}).addTo(map);
   map.fitBounds(L.polyline(pts.map(p=>[p[1],p[0]])).getBounds(),{padding:[20,20]});
   say("Touche ◎ pour te localiser sur la carte.");
 }).catch(e=>say("Données de la carte introuvables ("+e.message+").",true));
 const zl=()=>{const sat=map.hasLayer(base["Satellite"]);
- for(const k of["noms","numeros"])if(G[k])G[k].setStyle({color:sat?"#fff":"#1f2937",opacity:map.getZoom()>=17?.95:0});
+ for(const k of["numeros"])if(G[k])G[k].setStyle({color:sat?"#fff":"#1f2937",opacity:map.getZoom()>=17?.95:0});
  if(G.limites)G.limites.setStyle({color:sat?"#e2e8f0":"#64748b"})};
 map.on("zoomend baselayerchange overlayadd",zl);
 // ---- GPS ----
